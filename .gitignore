@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# AgentCore local build/deploy artifacts (contain account IDs, ARNs, resource names)
+.bedrock_agentcore/
+.bedrock_agentcore.yaml
+.dockerignore
+
+# Logs from local troubleshooting
+*.log
+deploy_log*.txt
+
+# OS files
+.DS_Store
+
+# Credentials / secrets — never commit
+creds.txt
+*.pem
+*.env
+.env
