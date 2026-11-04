@@ -59,10 +59,10 @@ os.environ["BYPASS_TOOL_CONSENT"] = "true"
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 # Fill these in with the resource identifiers you collected during setup.
-GATEWAY_URL = "https://customersupportgateway-qbizdvboqw.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp"   # e.g. https://xxxx.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp
-KB_ID       = "ITJFN2BV0Z"          # Knowledge Base ID from the Bedrock console
-REGION      = "us-east-1"
-MEMORY_ID   = "<memory-id>"        # Memory ID from the AgentCore Memory console (blocked — see note above)
+GATEWAY_URL = os.environ.get("GATEWAY_URL", "https://customersupportgateway-qbizdvboqw.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp")
+KB_ID       = os.environ.get("KB_ID", "ITJFN2BV0Z")          # Knowledge Base ID from the Bedrock console
+REGION      = os.environ.get("AWS_REGION") or os.environ.get("REGION") or "us-east-1"
+MEMORY_ID   = os.environ.get("MEMORY_ID") or os.environ.get("AGENTCORE_MEMORY_ID") or "<memory-id>"        # Memory ID from environment or fallback placeholder
 
 
 # ── Model and Clients ─────────────────────────────────────────────────────────
@@ -223,7 +223,8 @@ class MemoryHook(HookProvider):
                     # If memory context was prepended earlier, save only the
                     # customer's original message, not the injected context.
                     if customer_query.startswith("Customer Context:\n"):
-                        parts = customer_query.rsplit("\n\n", 1)
+                        # Use split("\n\n", 1) instead of rsplit to preserve multi-paragraph user queries
+                        parts = customer_query.split("\n\n", 1)
                         if len(parts) == 2:
                             customer_query = parts[1]
 
